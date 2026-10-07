@@ -1,27 +1,29 @@
 import express from "express";
 import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+import customerRoutes from "./routes/customerRoutes.js";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
+connectDB();
 
 const app = express();
 
-// Middleware: lets Express read JSON sent in the request body
 app.use(express.json());
 
-// Route 1: basic check
 app.get("/", (req, res) => {
   res.send("Maya Centring Plates API is running");
 });
 
-// Route 2: health check that returns JSON
 app.get("/api/health", (req, res) => {
   res.json({ success: true, message: "Server is healthy" });
 });
 
-// Temporary route: to see how req.body works (we'll delete this later)
-app.post("/api/test-body", (req, res) => {
-  res.json({ success: true, youSent: req.body });
-});
+app.use("/api/customers", customerRoutes);
+
+// These two MUST come last, after all routes
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
