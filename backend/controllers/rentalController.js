@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
 import Rental from "../models/Rental.js";
 import Customer from "../models/Customer.js";
 import Inventory from "../models/Inventory.js";
 import { calculateBill } from "../utils/billing.js";
+import { AppError } from "../utils/AppError.js";
 
 // Adds a "billing" object to a rental
 // Active rental → bill as of NOW. Returned rental → the saved final values.
@@ -37,32 +37,10 @@ const addBilling = (rental) => {
 // @route   POST /api/rentals
 export const createRental = async (req, res, next) => {
   try {
+    // Zod already checked: valid ids, whole-number quantity >= 1,
+    // and startDate is a real date that is not in the future (or missing)
     const { customerId, materialId, quantity, startDate } = req.body;
-
-    if (
-      !mongoose.isValidObjectId(customerId) ||
-      !mongoose.isValidObjectId(materialId)
-    ) {
-      res.status(400);
-      throw new Error("Valid customerId and materialId are required");
-    }
-
-    if (!Number.isInteger(quantity) || quantity < 1) {
-      res.status(400);
-      throw new Error("Quantity must be a whole number of at least 1");
-    }
-
-    const start = startDate ? new Date(startDate) : new Date();
-
-    if (isNaN(start.getTime())) {
-      res.status(400);
-      throw new Error("Invalid start date");
-    }
-
-    if (start > new Date()) {
-      res.status(400);
-      throw new Error("Start date cannot be in the future");
-    }
+    const start = startDate ?? new Date();
 
     const customerExists = await Customer.exists({ _id: customerId });
     if (!customerExists) {
@@ -83,9 +61,10 @@ export const createRental = async (req, res, next) => {
     );
 
     if (!reserved) {
-      res.status(400);
-      throw new Error(
-        `Insufficient stock. Only ${material.availableQuantity} available`
+      throw new AppError(
+        `Insufficient stock. Only ${material.availableQuantity} available`,
+        400,
+        "INSUFFICIENT_STOCK"
       );
     }
 
@@ -195,17 +174,13 @@ export const returnRental = async (req, res, next) => {
     }
 
     if (rental.status !== "active") {
-      res.status(400);
-      throw new Error("Rental is already returned");
+      throw new AppError("Rental is already returned", 400, "ALREADY_RETURNED");
     }
 
+    // Zod already turned returnDate into a real Date (or left it missing)
     const now = new Date();
-    const returnDate = req.body.returnDate ? new Date(req.body.returnDate) : now;
+    const returnDate = req.body.returnDate ?? now;
 
-    if (isNaN(returnDate.getTime())) {
-      res.status(400);
-      throw new Error("Invalid return date");
-    }
     if (returnDate > now) {
       res.status(400);
       throw new Error("Return date cannot be in the future");
@@ -237,8 +212,7 @@ export const returnRental = async (req, res, next) => {
       .populate("material", "materialName");
 
     if (!updated) {
-      res.status(400);
-      throw new Error("Rental is already returned");
+      throw new AppError("Rental is already returned", 400, "ALREADY_RETURNED");
     }
 
     // Put the plates back into stock

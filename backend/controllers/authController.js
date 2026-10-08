@@ -5,12 +5,8 @@ import generateToken from "../utils/generateToken.js";
 // @route   POST /api/auth/login
 export const login = async (req, res, next) => {
   try {
+    // Zod already checked that email and password are present and valid
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      res.status(400);
-      throw new Error("Email and password are required");
-    }
 
     // password has select:false, so we ask for it explicitly
     const user = await User.findOne({ email }).select("+password");
