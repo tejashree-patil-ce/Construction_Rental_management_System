@@ -1,4 +1,5 @@
 import Customer from "../models/Customer.js";
+import Rental from "../models/Rental.js";
 
 // @desc    Create a customer
 // @route   POST /api/customers
@@ -86,6 +87,11 @@ export const updateCustomer = async (req, res, next) => {
 // @desc    Delete a customer
 // @route   DELETE /api/customers/:id
 export const deleteCustomer = async (req, res, next) => {
+      const hasRentals = await Rental.exists({ customer: req.params.id });
+    if (hasRentals) {
+      res.status(400);
+      throw new Error("Cannot delete a customer who has rental records");
+    }
   try {
     const customer = await Customer.findByIdAndDelete(req.params.id);
 

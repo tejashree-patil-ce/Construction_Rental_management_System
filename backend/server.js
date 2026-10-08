@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import rentalRoutes from "./routes/rentalRoutes.js";
 import connectDB from "./config/db.js";
 import inventoryRoutes from "./routes/inventoryRoutes.js";
 import customerRoutes from "./routes/customerRoutes.js";
@@ -26,6 +27,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/inventory", protect, inventoryRoutes);
+app.use("/api/rentals", protect, rentalRoutes);
 
 // These two MUST come last, after all routes
 app.use(notFound);
