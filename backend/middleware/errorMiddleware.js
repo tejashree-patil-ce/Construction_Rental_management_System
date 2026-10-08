@@ -33,4 +33,16 @@ export const errorHandler = (err, req, res, next) => {
     success: false,
     message,
   });
+
+    // Fake or tampered token
+  if (err.name === "JsonWebTokenError") {
+    statusCode = 401;
+    message = "Not authorized, invalid token";
+  }
+
+  // Token past its expiry time
+  if (err.name === "TokenExpiredError") {
+    statusCode = 401;
+    message = "Not authorized, token expired";
+  }
 };
