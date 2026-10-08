@@ -1,10 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
+import inventoryRoutes from "./routes/inventoryRoutes.js";
 import customerRoutes from "./routes/customerRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import authRoutes from "./routes/authRoutes.js";
 import { protect } from "./middleware/authMiddleware.js";
+
 
 dotenv.config();
 connectDB();
@@ -23,6 +25,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/customers", customerRoutes);
+app.use("/api/inventory", protect, inventoryRoutes);
 
 // These two MUST come last, after all routes
 app.use(notFound);
