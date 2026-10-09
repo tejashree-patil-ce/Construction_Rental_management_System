@@ -41,4 +41,20 @@ export const getErrorMessage = (error) => {
   return error.response.data?.message || "Something went wrong. Please try again.";
 };
 
+// Turns validation details into { fieldName: "message" } for forms
+export const getFieldErrors = (error) => {
+  const details = error.response?.data?.error?.details;
+  const fields = {};
+
+  if (Array.isArray(details)) {
+    details.forEach((d) => {
+      if (d.field && !fields[d.field]) {
+        fields[d.field] = d.message;
+      }
+    });
+  }
+
+  return fields;
+};
+
 export default api;
