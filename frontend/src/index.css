@@ -319,3 +319,77 @@ input.invalid {
   color: var(--danger-text);
   font-weight: 600;
 }
+
+/* ---------- Step 11 additions ---------- */
+select.invalid {
+  border-color: var(--danger-text);
+}
+
+.notice {
+  background: #e6f4ea;
+  color: #1e6b34;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.rental-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.rental-card h3 {
+  margin: 0;
+}
+
+.rental-card p {
+  margin: 0.4rem 0;
+}
+
+.rental-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.badge-active {
+  background: #fff1e6;
+  color: var(--accent-dark);
+  border: 1px solid var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  background: #faf8f3;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.7rem;
+  margin: 0.9rem 0;
+}
+
+.stats small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stats strong {
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats .bill {
+  color: var(--accent-dark);
+}

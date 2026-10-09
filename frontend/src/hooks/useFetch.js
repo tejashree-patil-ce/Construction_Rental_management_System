@@ -3,6 +3,7 @@ import api, { getErrorMessage } from "../api/axios";
 
 export default function useFetch(url) {
   const [data, setData] = useState(null);
+  const [fetchedAt, setFetchedAt] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -10,6 +11,7 @@ export default function useFetch(url) {
     try {
       const res = await api.get(url);
       setData(res.data.data);
+      setFetchedAt(Date.now());
       setError("");
     } catch (err) {
       setError(getErrorMessage(err));
@@ -22,5 +24,5 @@ export default function useFetch(url) {
     load();
   }, [load]);
 
-  return { data, loading, error, reload: load };
+  return { data, loading, error, reload: load, fetchedAt };
 }

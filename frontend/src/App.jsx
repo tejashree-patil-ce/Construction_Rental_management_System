@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Rentals from "./pages/Rentals";
 import Customers from "./pages/Customers";
 import Inventory from "./pages/Inventory";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -11,7 +12,6 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
 
-      {/* One protected layout wraps every page inside it */}
       <Route
         element={
           <ProtectedRoute>
@@ -20,6 +20,7 @@ export default function App() {
         }
       >
         <Route path="/" element={<Dashboard />} />
+        <Route path="/rentals" element={<Rentals />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/inventory" element={<Inventory />} />
       </Route>

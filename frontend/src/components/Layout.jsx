@@ -7,12 +7,13 @@ export default function Layout() {
   return (
     <div>
       <header className="topbar">
-        <div className="brand">Construction Rental Manager</div>
+        <div className="brand">Maya Centring Plates</div>
 
         <nav className="nav">
           <NavLink to="/" end>
             Dashboard
           </NavLink>
+          <NavLink to="/rentals">Rentals</NavLink>
           <NavLink to="/customers">Customers</NavLink>
           <NavLink to="/inventory">Inventory</NavLink>
         </nav>
