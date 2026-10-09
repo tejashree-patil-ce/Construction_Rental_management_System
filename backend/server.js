@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -9,11 +10,13 @@ import portalRoutes from "./routes/portalRoutes.js";
 import { protect } from "./middleware/authMiddleware.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
+
 dotenv.config();
 connectDB();
 
 const app = express();
 
+app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
 app.use(express.json());
 
 app.get("/", (req, res) => {
