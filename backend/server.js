@@ -1,13 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
-import rentalRoutes from "./routes/rentalRoutes.js";
 import connectDB from "./config/db.js";
-import inventoryRoutes from "./routes/inventoryRoutes.js";
-import customerRoutes from "./routes/customerRoutes.js";
-import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import authRoutes from "./routes/authRoutes.js";
+import customerRoutes from "./routes/customerRoutes.js";
+import inventoryRoutes from "./routes/inventoryRoutes.js";
+import rentalRoutes from "./routes/rentalRoutes.js";
+import portalRoutes from "./routes/portalRoutes.js";
 import { protect } from "./middleware/authMiddleware.js";
-
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
 connectDB();
@@ -24,8 +24,12 @@ app.get("/api/health", (req, res) => {
   res.json({ success: true, message: "Server is healthy" });
 });
 
+// Public routes (no token)
 app.use("/api/auth", authRoutes);
-app.use("/api/customers", customerRoutes);
+app.use("/api/portal", portalRoutes);
+
+// Admin-only routes (token required)
+app.use("/api/customers", protect, customerRoutes);
 app.use("/api/inventory", protect, inventoryRoutes);
 app.use("/api/rentals", protect, rentalRoutes);
 
