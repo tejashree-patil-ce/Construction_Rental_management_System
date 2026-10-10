@@ -14,6 +14,7 @@ export default function Layout() {
             Dashboard
           </NavLink>
           <NavLink to="/rentals">Rentals</NavLink>
+          <NavLink to="/history">History</NavLink>
           <NavLink to="/customers">Customers</NavLink>
           <NavLink to="/inventory">Inventory</NavLink>
         </nav>

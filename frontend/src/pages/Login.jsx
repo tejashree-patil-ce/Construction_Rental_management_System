@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getErrorMessage } from "../api/axios";
 
@@ -18,7 +18,7 @@ export default function Login() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // stop the browser's default page reload
+    e.preventDefault();
     setError("");
     setLoading(true);
 
@@ -35,7 +35,7 @@ export default function Login() {
   return (
     <div className="login-page">
       <form className="card login-card" onSubmit={handleSubmit}>
-        <h1>Construction Rental Manager</h1>
+        <h1>Maya Centring Plates</h1>
         <p className="muted">Admin login</p>
 
         {error && <div className="alert">{error}</div>}
@@ -46,7 +46,7 @@ export default function Login() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="admin@gmail.com"
+          placeholder="admin@maya.com"
           required
         />
 
@@ -62,6 +62,10 @@ export default function Login() {
         <button type="submit" disabled={loading}>
           {loading ? "Signing in..." : "Sign in"}
         </button>
+
+        <p className="muted center">
+          Are you a customer? <Link to="/portal">Check your rentals</Link>
+        </p>
       </form>
     </div>
   );

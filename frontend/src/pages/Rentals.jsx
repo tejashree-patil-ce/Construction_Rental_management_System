@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import api, { getErrorMessage } from "../api/axios";
 import useFetch from "../hooks/useFetch";
 import useNow from "../hooks/useNow";
@@ -12,14 +13,14 @@ export default function Rentals() {
   const now = useNow(); // one timer for the whole page
 
   const [formOpen, setFormOpen] = useState(false);
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState(null); // { text, invoiceId? }
   const [actionError, setActionError] = useState("");
   const [returningId, setReturningId] = useState(null);
 
   const handleStarted = () => {
     setFormOpen(false);
     setActionError("");
-    setNotice("Rental started successfully.");
+    setNotice({ text: "Rental started successfully." });
     reload();
   };
 
@@ -29,7 +30,7 @@ export default function Rentals() {
     );
     if (!ok) return;
 
-    setNotice("");
+    setNotice(null);
     setActionError("");
     setReturningId(rental._id);
 
@@ -37,9 +38,10 @@ export default function Rentals() {
       const res = await api.put(`/rentals/${rental._id}/return`);
       const final = res.data.data.billing;
 
-      setNotice(
-        `Returned. Final bill: ${formatCurrency(final.totalAmount)} for ${final.billedDays} billed day(s).`
-      );
+      setNotice({
+        text: `Returned. Final bill: ${formatCurrency(final.totalAmount)} for ${final.billedDays} billed day(s).`,
+        invoiceId: rental._id,
+      });
       reload();
     } catch (err) {
       setActionError(getErrorMessage(err));
@@ -55,7 +57,14 @@ export default function Rentals() {
         <button onClick={() => setFormOpen(true)}>+ Start rental</button>
       </div>
 
-      {notice && <div className="notice">{notice}</div>}
+      {notice && (
+        <div className="notice">
+          {notice.text}{" "}
+          {notice.invoiceId && (
+            <Link to={`/invoice/${notice.invoiceId}`}>View invoice</Link>
+          )}
+        </div>
+      )}
       {error && <div className="alert">{error}</div>}
       {actionError && <div className="alert">{actionError}</div>}
 
