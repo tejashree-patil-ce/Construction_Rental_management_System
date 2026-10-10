@@ -20,7 +20,9 @@ export default function useFetch(url) {
     }
   }, [url]);
 
-  useEffect(() => {
+   useEffect(() => {
+    // setState happens only after the awaited request finishes
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
   }, [load]);
 

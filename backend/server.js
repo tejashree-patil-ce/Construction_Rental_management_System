@@ -1,6 +1,7 @@
 import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
+import cors from "cors";
+import helmet from "helmet";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import customerRoutes from "./routes/customerRoutes.js";
@@ -10,14 +11,23 @@ import portalRoutes from "./routes/portalRoutes.js";
 import { protect } from "./middleware/authMiddleware.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
-
 dotenv.config();
+
+if (!process.env.JWT_SECRET) {
+  console.error("JWT_SECRET is not set. Add it to your environment variables.");
+  process.exit(1);
+}
+
 connectDB();
 
 const app = express();
 
+// Render runs one proxy in front of the app
+app.set("trust proxy", 1);
+
+app.use(helmet());
 app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
-app.use(express.json());
+app.use(express.json({ limit: "10kb" }));
 
 app.get("/", (req, res) => {
   res.send("Maya Centring Plates API is running");
